@@ -150,13 +150,16 @@ MIT License
 
 Copyright (c) 2026 Seam Sikder Nahid
 
-Permission is hereby granted, free of charge, to any person obtaining a copy...
+Permission is hereby granted, free of charge, to any person obtaining a copy.
 
 ## 🙏 Credits
 
-Built with ❤️ by Seam Sikder Nahid for personal growth, discipline, and productivity.
+Built with ❤️ by **Seam Sikder Nahid** — a tool for personal growth, discipline, and productivity.
 
-Inspired by the philosophy that **tracking creates awareness**, **consistency builds discipline**, and **gamification sustains motivation**.
+Inspired by the philosophy that:
+- **Tracking creates awareness,**
+- **Consistency builds discipline,**
+- **and Gamification sustains motivation.**
 
 ## 🚀 Quick Stats
 
