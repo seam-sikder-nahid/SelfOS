@@ -1,8 +1,3 @@
-// ============================================
-// SelfOS - Personal Productivity OS
-// Main Application Logic
-// ============================================
-
 class ProductivityOS {
     constructor() {
         this.data = this.loadData();
@@ -10,10 +5,6 @@ class ProductivityOS {
         this.initializeData();
         this.init();
     }
-
-    // ============================================
-    // Data Management
-    // ============================================
 
     loadData() {
         const stored = localStorage.getItem('progressOS');
@@ -27,7 +18,9 @@ class ProductivityOS {
     initializeData() {
         if (!this.data.tasks) this.data.tasks = {};
         if (!this.data.goals) this.data.goals = [];
+        if (!this.data.completedGoals) this.data.completedGoals = [];
         if (!this.data.courses) this.data.courses = [];
+        if (!this.data.completedCourses) this.data.completedCourses = [];
         if (!this.data.notes) this.data.notes = {};
         if (!this.data.futureGoals) this.data.futureGoals = {};
         if (!this.data.tomorrow) this.data.tomorrow = '';
@@ -38,12 +31,9 @@ class ProductivityOS {
         this.saveData();
     }
 
-    // ============================================
-    // Initialization & Event Listeners
-    // ============================================
-
     init() {
         this.setupTheme();
+        this.setupMobileMenu();
         this.setupNavigation();
         this.setupDateDisplays();
         this.setupTaskHandlers();
@@ -53,7 +43,6 @@ class ProductivityOS {
         this.setupQuoteSection();
         this.setupPlanningHandlers();
         this.setupMiscHandlers();
-        this.setupMobileMenu();
         this.updateAllUI();
         this.checkStreakStatus();
     }
@@ -79,6 +68,31 @@ class ProductivityOS {
         icon.textContent = theme === 'dark' ? '☀️' : '🌙';
     }
 
+    setupMobileMenu() {
+        const toggle = document.getElementById('mobileMenuToggle');
+        const sidebar = document.getElementById('sidebar');
+        const navBtns = document.querySelectorAll('.nav-btn');
+
+        toggle.addEventListener('click', () => {
+            toggle.classList.toggle('active');
+            sidebar.classList.toggle('active');
+        });
+
+        navBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                toggle.classList.remove('active');
+                sidebar.classList.remove('active');
+            });
+        });
+
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                toggle.classList.remove('active');
+                sidebar.classList.remove('active');
+            }
+        });
+    }
+
     setupNavigation() {
         const navBtns = document.querySelectorAll('.nav-btn');
         navBtns.forEach(btn => {
@@ -96,6 +110,8 @@ class ProductivityOS {
         document.getElementById(section).classList.add('active');
         if (section === 'analytics') this.updateAnalytics();
         if (section === 'planning') this.updatePlanning();
+        if (section === 'goals') this.renderCompletedGoals();
+        if (section === 'courses') this.renderCompletedCourses();
     }
 
     setupDateDisplays() {
@@ -114,34 +130,6 @@ class ProductivityOS {
             }
         });
     }
-    setupMobileMenu() {
-        const toggle = document.getElementById('mobileMenuToggle');
-        const sidebar = document.querySelector('.sidebar');
-        const navBtns = document.querySelectorAll('.nav-btn');
-
-        toggle.addEventListener('click', () => {
-            toggle.classList.toggle('active');
-            sidebar.classList.toggle('active');
-        });
-
-        navBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                toggle.classList.remove('active');
-                sidebar.classList.remove('active');
-            });
-        });
-
-        // Close menu on window resize if opened
-        window.addEventListener('resize', () => {
-            if (window.innerWidth > 768) {
-                toggle.classList.remove('active');
-                sidebar.classList.remove('active');
-            }
-        });
-    }
-    // ============================================
-    // Task Management
-    // ============================================
 
     setupTaskHandlers() {
         const addBtn = document.getElementById('addTaskBtn');
@@ -218,7 +206,6 @@ class ProductivityOS {
             </div>
         `).join('');
 
-        // Event listeners
         list.querySelectorAll('[data-toggle="task-completion"]').forEach(checkbox => {
             checkbox.addEventListener('change', (e) => this.toggleTaskCompletion(parseInt(e.target.dataset.taskId)));
         });
@@ -261,10 +248,6 @@ class ProductivityOS {
         this.renderTasks();
         this.updateAllUI();
     }
-
-    // ============================================
-    // Note Management
-    // ============================================
 
     setupNoteHandlers() {
         const saveBtn = document.getElementById('saveNotesBtn');
@@ -322,7 +305,6 @@ class ProductivityOS {
         const previousContainer = document.getElementById('previousReflectionsContainer');
         const todayNotes = this.data.notes[this.currentDate];
 
-        // Render today's reflection
         if (todayNotes && (todayNotes.learning || todayNotes.missed)) {
             const today = new Date(this.currentDate);
             const dateStr = today.toLocaleDateString('en-US', { 
@@ -357,7 +339,6 @@ class ProductivityOS {
             container.innerHTML = '<p class="no-reflection-message">No reflection saved for today yet. Share your thoughts!</p>';
         }
 
-        // Render previous reflections
         const sortedDates = Object.keys(this.data.notes).sort().reverse();
         const previousNotes = sortedDates.filter(date => date !== this.currentDate).slice(0, 10);
 
@@ -394,10 +375,6 @@ class ProductivityOS {
             previousContainer.innerHTML = '<p class="no-reflection-message">No past reflections yet. Start building your reflection history!</p>';
         }
     }
-
-    // ============================================
-    // Goal Management
-    // ============================================
 
     setupGoalHandlers() {
         document.getElementById('addGoalBtn').addEventListener('click', () => this.addGoal());
@@ -440,49 +417,50 @@ class ProductivityOS {
 
     renderGoals() {
         const list = document.getElementById('goalsList');
-        if (this.data.goals.length === 0) {
-            list.innerHTML = '<p class="empty-state">No goals yet. Start building your future!</p>';
-            return;
+        const activeGoals = this.data.goals.filter(g => g.spentHours < g.estimatedHours);
+
+        if (activeGoals.length === 0) {
+            list.innerHTML = '<p class="empty-state">No active goals yet. Start building your future!</p>';
+        } else {
+            list.innerHTML = activeGoals.map(goal => {
+                const progress = (goal.spentHours / goal.estimatedHours) * 100;
+                const daysLeft = Math.ceil((new Date(goal.deadline) - new Date()) / (1000 * 60 * 60 * 24));
+                const color = daysLeft < 0 ? '#ef4444' : daysLeft < 7 ? '#f59e0b' : '#10b981';
+
+                return `
+                    <div class="goal-card">
+                        <div class="goal-header">
+                            <h4 class="goal-title">${this.escapeHtml(goal.name)}</h4>
+                            <div class="goal-meta">
+                                <span class="badge badge-category">${goal.category}</span>
+                                <span class="badge badge-priority ${goal.priority}">${goal.priority}</span>
+                            </div>
+                        </div>
+                        <div class="progress-section">
+                            <div class="progress-info">
+                                <span>${goal.spentHours.toFixed(1)}h / ${goal.estimatedHours}h</span>
+                                <span>${Math.round(progress)}%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${progress}%"></div>
+                            </div>
+                        </div>
+                        <div class="deadline-info">
+                            Deadline: ${new Date(goal.deadline).toLocaleDateString()} 
+                            <span style="color: ${color}">(${daysLeft > 0 ? daysLeft + ' days left' : 'Overdue'})</span>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <input type="number" placeholder="Add hours" step="0.25" min="0" 
+                                class="form-input small" data-goal-id="${goal.id}" data-action="goal-hours">
+                            <button class="btn-secondary" data-goal-id="${goal.id}" data-action="add-goal-hours"
+                                style="padding: 10px 16px;">+ Add</button>
+                            <button class="btn-secondary" data-goal-id="${goal.id}" data-action="delete-goal"
+                                style="padding: 10px 16px; background-color: rgba(239, 68, 68, 0.1); color: #ef4444;">Delete</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
         }
-
-        list.innerHTML = this.data.goals.map(goal => {
-            const progress = (goal.spentHours / goal.estimatedHours) * 100;
-            const daysLeft = Math.ceil((new Date(goal.deadline) - new Date()) / (1000 * 60 * 60 * 24));
-            const color = daysLeft < 0 ? '#ef4444' : daysLeft < 7 ? '#f59e0b' : '#10b981';
-
-            return `
-                <div class="goal-card">
-                    <div class="goal-header">
-                        <h4 class="goal-title">${this.escapeHtml(goal.name)}</h4>
-                        <div class="goal-meta">
-                            <span class="badge badge-category">${goal.category}</span>
-                            <span class="badge badge-priority ${goal.priority}">${goal.priority}</span>
-                        </div>
-                    </div>
-                    <div class="progress-section">
-                        <div class="progress-info">
-                            <span>${goal.spentHours.toFixed(1)}h / ${goal.estimatedHours}h</span>
-                            <span>${Math.round(progress)}%</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: ${progress}%"></div>
-                        </div>
-                    </div>
-                    <div class="deadline-info">
-                        Deadline: ${new Date(goal.deadline).toLocaleDateString()} 
-                        <span style="color: ${color}">(${daysLeft > 0 ? daysLeft + ' days left' : 'Overdue'})</span>
-                    </div>
-                    <div style="display: flex; gap: 8px;">
-                        <input type="number" placeholder="Add hours" step="0.25" min="0" 
-                            class="form-input small" data-goal-id="${goal.id}" data-action="goal-hours">
-                        <button class="btn-secondary" data-goal-id="${goal.id}" data-action="add-goal-hours"
-                            style="padding: 10px 16px;">+ Add</button>
-                        <button class="btn-secondary" data-goal-id="${goal.id}" data-action="delete-goal"
-                            style="padding: 10px 16px; background-color: rgba(239, 68, 68, 0.1); color: #ef4444;">Delete</button>
-                    </div>
-                </div>
-            `;
-        }).join('');
 
         list.querySelectorAll('[data-action="add-goal-hours"]').forEach(btn => {
             btn.addEventListener('click', (e) => {
@@ -500,11 +478,19 @@ class ProductivityOS {
                 this.deleteGoal(goalId);
             });
         });
+
+        this.renderCompletedGoals();
     }
 
     addGoalHours(goalId, hours) {
         const goal = this.data.goals.find(g => g.id === goalId);
         goal.spentHours += hours;
+        
+        if (goal.spentHours >= goal.estimatedHours) {
+            this.data.completedGoals.push(goal);
+            this.data.goals = this.data.goals.filter(g => g.id !== goalId);
+        }
+        
         this.saveData();
         this.renderGoals();
         this.updateAllUI();
@@ -517,9 +503,36 @@ class ProductivityOS {
         this.renderGoals();
     }
 
-    // ============================================
-    // Course Management
-    // ============================================
+    renderCompletedGoals() {
+        const section = document.getElementById('achievedGoalsSection');
+        const list = document.getElementById('achievedGoalsList');
+
+        if (this.data.completedGoals.length === 0) {
+            section.style.display = 'none';
+            return;
+        }
+
+        section.style.display = 'block';
+        list.innerHTML = this.data.completedGoals.map(goal => `
+            <div class="achieved-goal-card">
+                <div class="goal-header">
+                    <h4 class="goal-title">✅ ${this.escapeHtml(goal.name)}</h4>
+                    <div class="goal-meta">
+                        <span class="badge badge-category">${goal.category}</span>
+                    </div>
+                </div>
+                <div class="progress-section">
+                    <div class="progress-info">
+                        <span>${goal.spentHours}h / ${goal.estimatedHours}h</span>
+                        <span>100%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 100%"></div>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
 
     setupCourseHandlers() {
         document.getElementById('addCourseBtn').addEventListener('click', () => this.addCourse());
@@ -555,39 +568,40 @@ class ProductivityOS {
 
     renderCourses() {
         const list = document.getElementById('coursesList');
-        if (this.data.courses.length === 0) {
-            list.innerHTML = '<p class="empty-state">No courses yet. Start learning!</p>';
-            return;
+        const activeCourses = this.data.courses.filter(c => c.completedLessons < c.totalLessons);
+
+        if (activeCourses.length === 0) {
+            list.innerHTML = '<p class="empty-state">No active courses yet. Start learning!</p>';
+        } else {
+            list.innerHTML = activeCourses.map(course => {
+                const progress = (course.completedLessons / course.totalLessons) * 100;
+
+                return `
+                    <div class="course-card">
+                        <div class="goal-header">
+                            <h4 class="goal-title">${this.escapeHtml(course.name)}</h4>
+                        </div>
+                        <div class="progress-section">
+                            <div class="progress-info">
+                                <span>${course.completedLessons} / ${course.totalLessons} lessons</span>
+                                <span>${Math.round(progress)}%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${progress}%"></div>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 8px; margin-top: 12px;">
+                            <button class="btn-secondary" data-course-id="${course.id}" data-action="complete-lesson"
+                                ${course.completedLessons >= course.totalLessons ? 'disabled' : ''}>
+                                ✓ Complete Lesson
+                            </button>
+                            <button class="btn-secondary" data-course-id="${course.id}" data-action="delete-course"
+                                style="background-color: rgba(239, 68, 68, 0.1); color: #ef4444;">Delete</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
         }
-
-        list.innerHTML = this.data.courses.map(course => {
-            const progress = (course.completedLessons / course.totalLessons) * 100;
-
-            return `
-                <div class="course-card">
-                    <div class="goal-header">
-                        <h4 class="goal-title">${this.escapeHtml(course.name)}</h4>
-                    </div>
-                    <div class="progress-section">
-                        <div class="progress-info">
-                            <span>${course.completedLessons} / ${course.totalLessons} lessons</span>
-                            <span>${Math.round(progress)}%</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: ${progress}%"></div>
-                        </div>
-                    </div>
-                    <div style="display: flex; gap: 8px; margin-top: 12px;">
-                        <button class="btn-secondary" data-course-id="${course.id}" data-action="complete-lesson"
-                            ${course.completedLessons >= course.totalLessons ? 'disabled' : ''}>
-                            ✓ Complete Lesson
-                        </button>
-                        <button class="btn-secondary" data-course-id="${course.id}" data-action="delete-course"
-                            style="background-color: rgba(239, 68, 68, 0.1); color: #ef4444;">Delete</button>
-                    </div>
-                </div>
-            `;
-        }).join('');
 
         list.querySelectorAll('[data-action="complete-lesson"]').forEach(btn => {
             btn.addEventListener('click', (e) => {
@@ -602,12 +616,20 @@ class ProductivityOS {
                 this.deleteCourse(courseId);
             });
         });
+
+        this.renderCompletedCourses();
     }
 
     completeLessonInCourse(courseId) {
         const course = this.data.courses.find(c => c.id === courseId);
         if (course.completedLessons < course.totalLessons) {
             course.completedLessons++;
+            
+            if (course.completedLessons >= course.totalLessons) {
+                this.data.completedCourses.push(course);
+                this.data.courses = this.data.courses.filter(c => c.id !== courseId);
+            }
+            
             this.saveData();
             this.renderCourses();
             this.updateAllUI();
@@ -621,9 +643,33 @@ class ProductivityOS {
         this.renderCourses();
     }
 
-    // ============================================
-    // Planning Management
-    // ============================================
+    renderCompletedCourses() {
+        const section = document.getElementById('completedCoursesSection');
+        const list = document.getElementById('completedCoursesList');
+
+        if (this.data.completedCourses.length === 0) {
+            section.style.display = 'none';
+            return;
+        }
+
+        section.style.display = 'block';
+        list.innerHTML = this.data.completedCourses.map(course => `
+            <div class="completed-course-card">
+                <div class="goal-header">
+                    <h4 class="goal-title">🎓 ${this.escapeHtml(course.name)}</h4>
+                </div>
+                <div class="progress-section">
+                    <div class="progress-info">
+                        <span>${course.completedLessons} / ${course.totalLessons} lessons</span>
+                        <span>100%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 100%"></div>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
 
     setupPlanningHandlers() {
         document.getElementById('saveTomorrowBtn').addEventListener('click', () => {
@@ -645,10 +691,6 @@ class ProductivityOS {
         tomorrow.setDate(tomorrow.getDate() + 1);
         const tomorrowStr = tomorrow.toISOString().split('T')[0];
 
-        if (!this.data.futureGoals) {
-            this.data.futureGoals = {};
-        }
-
         this.data.futureGoals[tomorrowStr] = {
             goals: input,
             savedAt: new Date().getTime(),
@@ -668,12 +710,10 @@ class ProductivityOS {
         tomorrow.setDate(tomorrow.getDate() + 1);
         const tomorrowStr = tomorrow.toISOString().split('T')[0];
         
-        // Load saved tomorrow's goals if exists
-        if (this.data.futureGoals && this.data.futureGoals[tomorrowStr]) {
+        if (this.data.futureGoals[tomorrowStr]) {
             input.value = this.data.futureGoals[tomorrowStr].goals;
         }
 
-        // Update week overview
         const today = new Date();
         const startOfWeek = new Date(today.setDate(today.getDate() - today.getDay() + 1));
 
@@ -697,7 +737,6 @@ class ProductivityOS {
 
         weekOverview.innerHTML = dayElements.join('');
 
-        // Render saved tomorrow's goals
         this.renderSavedTomorrowGoals();
     }
 
@@ -705,16 +744,11 @@ class ProductivityOS {
         const savedContainer = document.getElementById('savedTomorrowGoals');
         const pastContainer = document.getElementById('pastPlannedGoals');
 
-        if (!this.data.futureGoals) {
-            this.data.futureGoals = {};
-        }
-
         const sortedDates = Object.keys(this.data.futureGoals).sort();
         const tomorrow = new Date();
         tomorrow.setDate(tomorrow.getDate() + 1);
         const tomorrowStr = tomorrow.toISOString().split('T')[0];
 
-        // Show tomorrow and upcoming goals
         const upcomingDates = sortedDates.filter(date => date >= tomorrowStr);
 
         if (upcomingDates.length > 0) {
@@ -749,7 +783,6 @@ class ProductivityOS {
             savedContainer.innerHTML = '<p class="no-goals-message">No upcoming goals planned yet. Use the form above to plan!</p>';
         }
 
-        // Show past planned goals
         const pastDates = sortedDates.filter(date => date < tomorrowStr).sort().reverse().slice(0, 10);
 
         if (pastDates.length > 0) {
@@ -776,10 +809,6 @@ class ProductivityOS {
             pastContainer.innerHTML = '<p class="no-goals-message">No past planning history yet.</p>';
         }
     }
-
-    // ============================================
-    // Quote System
-    // ============================================
 
     setupQuoteSection() {
         const quotes = [
@@ -810,10 +839,6 @@ class ProductivityOS {
         document.getElementById('quoteRefresh').addEventListener('click', displayNewQuote);
     }
 
-    // ============================================
-    // UI Updates
-    // ============================================
-
     updateAllUI() {
         this.updateDashboard();
         this.updateStreakCounter();
@@ -822,12 +847,10 @@ class ProductivityOS {
     }
 
     updateDashboard() {
-        // Today's stats
         const todayTasks = this.data.tasks[this.currentDate] || [];
         const todayHours = todayTasks.reduce((sum, t) => sum + (t.completed ? t.time : 0), 0);
         document.getElementById('todayHours').textContent = todayHours.toFixed(1) + 'h';
 
-        // Comparison with yesterday
         const yesterday = new Date();
         yesterday.setDate(yesterday.getDate() - 1);
         const yesterdayStr = yesterday.toISOString().split('T')[0];
@@ -839,11 +862,9 @@ class ProductivityOS {
         document.getElementById('todayComparison').textContent = todayHours.toFixed(1) + 'h';
         document.getElementById('todayTasksCount').textContent = todayTasks.length + ' tasks';
 
-        // Productivity score
         const score = this.calculateProductivityScore();
         document.getElementById('scoreValue').textContent = score;
 
-        // Level and points
         const level = Math.floor(this.data.points / 100) + 1;
         document.getElementById('levelValue').textContent = level;
         document.getElementById('totalPoints').textContent = this.data.points;
@@ -916,16 +937,15 @@ class ProductivityOS {
             { id: 'streak_7', name: '🌟 Week Warrior', description: '7-day streak', condition: () => this.data.streak >= 7 },
             { id: 'points_100', name: '💯 Centennial', description: '100 points earned', condition: () => this.data.points >= 100 },
             { id: 'goal_complete', name: '🏆 Goal Getter', description: 'Complete a goal', condition: () => {
-                return this.data.goals.some(g => g.spentHours >= g.estimatedHours);
+                return this.data.completedGoals.length > 0;
             }},
             { id: 'course_complete', name: '📚 Scholar', description: 'Complete a course', condition: () => {
-                return this.data.courses.some(c => c.completedLessons >= c.totalLessons);
+                return this.data.completedCourses.length > 0;
             }},
             { id: 'all_tasks', name: '💪 Perfectionist', description: 'Complete all today\'s tasks', condition: () => {
                 const today = this.data.tasks[this.currentDate] || [];
                 return today.length > 0 && today.every(t => t.completed);
             }},
-            { id: 'early_bird', name: '🌅 Early Bird', description: 'Log 5+ hours before noon', condition: () => false },
         ];
 
         const badgesGrid = document.getElementById('badgesGrid');
@@ -944,10 +964,6 @@ class ProductivityOS {
         this.saveData();
     }
 
-    // ============================================
-    // Analytics
-    // ============================================
-
     updateAnalytics() {
         this.updatePriorityDistribution();
         this.updateMonthlyStats();
@@ -957,11 +973,9 @@ class ProductivityOS {
     updatePriorityDistribution() {
         const allTasks = Object.values(this.data.tasks).flat();
         const counts = { high: 0, medium: 0, low: 0 };
-        const hours = { high: 0, medium: 0, low: 0 };
 
         allTasks.forEach(task => {
             counts[task.priority]++;
-            if (task.completed) hours[task.priority] += task.time;
         });
 
         const total = Object.values(counts).reduce((a, b) => a + b, 0) || 1;
@@ -1056,19 +1070,11 @@ class ProductivityOS {
         `).join('');
     }
 
-    // ============================================
-    // Gamification
-    // ============================================
-
     awardPoints(amount) {
         this.data.points += amount;
         this.saveData();
         this.updateAllUI();
     }
-
-    // ============================================
-    // Utility Functions
-    // ============================================
 
     escapeHtml(text) {
         const div = document.createElement('div');
@@ -1082,7 +1088,7 @@ class ProductivityOS {
 
         if (lastActive !== today) {
             if (lastActive === this.getYesterday()) {
-                // Streak continues if user was active yesterday
+                // Streak continues
             } else {
                 this.data.streak = 0;
             }
@@ -1097,10 +1103,6 @@ class ProductivityOS {
         return date.toISOString().split('T')[0];
     }
 }
-
-// ============================================
-// Initialize App on Load
-// ============================================
 
 document.addEventListener('DOMContentLoaded', () => {
     new ProductivityOS();
