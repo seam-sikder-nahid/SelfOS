@@ -1088,6 +1088,137 @@ body {
 }
 
 /* ============================================
+   Saved Reflections & Goals Display
+   ============================================ */
+
+.saved-reflections,
+.previous-reflections {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 24px;
+    margin-top: 32px;
+    margin-bottom: 24px;
+}
+
+.saved-reflections h3,
+.previous-reflections h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: var(--text-primary);
+}
+
+.reflection-card,
+.goal-day-card {
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 16px;
+    overflow: hidden;
+}
+
+.reflection-card:last-child,
+.goal-day-card:last-child {
+    margin-bottom: 0;
+}
+
+.reflection-date,
+.goal-date {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.reflection-date-text,
+.goal-date-text {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--text-primary);
+}
+
+.reflection-mood,
+.goal-date-label {
+    font-size: 20px;
+    display: flex;
+    gap: 4px;
+}
+
+.reflection-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 12px;
+}
+
+.reflection-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.reflection-item-label {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+
+.reflection-item-text {
+    font-size: 13px;
+    color: var(--text-primary);
+    line-height: 1.5;
+    padding: 10px;
+    background-color: var(--bg-tertiary);
+    border-radius: 6px;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.goal-text {
+    font-size: 13px;
+    color: var(--text-primary);
+    line-height: 1.6;
+    padding: 12px;
+    background-color: var(--bg-tertiary);
+    border-radius: 6px;
+    border-left: 3px solid var(--accent-primary);
+}
+
+.no-reflection-message,
+.no-goals-message {
+    text-align: center;
+    color: var(--text-tertiary);
+    padding: 30px 20px;
+    font-size: 14px;
+}
+
+.reflection-status {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border-color);
+}
+
+@media (max-width: 768px) {
+    .reflection-content {
+        grid-template-columns: 1fr;
+    }
+
+    .reflection-date {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+}
+
+/* ============================================
    Responsive Design
    ============================================ */
 
