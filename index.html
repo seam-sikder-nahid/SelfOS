@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SelfOS - Personal Productivity Operating System</title>
+    <title>ProgressOS - Personal Productivity Operating System</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -16,7 +16,7 @@
         <aside class="sidebar">
             <div class="sidebar-header">
                 <div class="app-logo">⚡</div>
-                <h1>SelfOS</h1>
+                <h1>ProgressOS</h1>
                 <p class="subtitle">discipline system</p>
             </div>
 
@@ -206,6 +206,22 @@
                     
                     <button class="btn-secondary" id="saveNotesBtn">Save Reflection</button>
                 </div>
+
+                <!-- Saved Reflections Display -->
+                <div class="saved-reflections">
+                    <h3>📔 Today's Reflection</h3>
+                    <div id="reflectionsHistory">
+                        <!-- Populated by JS with saved reflections -->
+                    </div>
+                </div>
+
+                <!-- Previous Days Reflections -->
+                <div class="previous-reflections">
+                    <h3>📚 Past Reflections</h3>
+                    <div id="previousReflectionsContainer">
+                        <!-- Populated by JS with past reflections -->
+                    </div>
+                </div>
             </section>
 
             <!-- Goals Section -->
@@ -343,11 +359,24 @@
                 <!-- Tomorrow's Goals -->
                 <div class="planning-card">
                     <h3>Tomorrow's Goals</h3>
-                    <div class="tomorrow-list" id="tomorrowList">
-                        <p class="empty-state">No goals set for tomorrow yet</p>
-                    </div>
                     <textarea id="tomorrowInput" placeholder="What do you want to achieve tomorrow?" class="form-textarea"></textarea>
                     <button class="btn-secondary" id="saveTomorrowBtn">Save Tomorrow's Goals</button>
+                </div>
+
+                <!-- Saved Tomorrow's Goals Display -->
+                <div class="planning-card">
+                    <h3>📅 Your Upcoming Goals</h3>
+                    <div id="savedTomorrowGoals">
+                        <!-- Populated by JS with saved goals and dates -->
+                    </div>
+                </div>
+
+                <!-- Past Planned Goals -->
+                <div class="planning-card">
+                    <h3>📋 Past Planning</h3>
+                    <div id="pastPlannedGoals">
+                        <!-- Populated by JS with past days' planned goals -->
+                    </div>
                 </div>
 
                 <!-- Weekly Overview -->
