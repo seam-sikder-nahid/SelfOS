@@ -1,5 +1,5 @@
 // ============================================
-// PROGRESSOS - Personal Productivity OS
+// SelfOS - Personal Productivity OS
 // Main Application Logic
 // ============================================
 
