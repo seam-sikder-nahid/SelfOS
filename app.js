@@ -53,6 +53,7 @@ class ProductivityOS {
         this.setupQuoteSection();
         this.setupPlanningHandlers();
         this.setupMiscHandlers();
+        this.setupMobileMenu();
         this.updateAllUI();
         this.checkStreakStatus();
     }
@@ -113,7 +114,31 @@ class ProductivityOS {
             }
         });
     }
+    setupMobileMenu() {
+        const toggle = document.getElementById('mobileMenuToggle');
+        const sidebar = document.querySelector('.sidebar');
+        const navBtns = document.querySelectorAll('.nav-btn');
 
+        toggle.addEventListener('click', () => {
+            toggle.classList.toggle('active');
+            sidebar.classList.toggle('active');
+        });
+
+        navBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                toggle.classList.remove('active');
+                sidebar.classList.remove('active');
+            });
+        });
+
+        // Close menu on window resize if opened
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                toggle.classList.remove('active');
+                sidebar.classList.remove('active');
+            }
+        });
+    }
     // ============================================
     // Task Management
     // ============================================
