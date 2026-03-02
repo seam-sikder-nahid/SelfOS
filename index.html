@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProgressOS - Personal Productivity Operating System</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Particle background -->
+    <div class="particle-bg"></div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="app-logo">⚡</div>
+                <h1>ProgressOS</h1>
+                <p class="subtitle">discipline system</p>
+            </div>
+
+            <nav class="main-nav">
+                <button class="nav-btn active" data-section="dashboard">
+                    <span class="icon">📊</span> Dashboard
+                </button>
+                <button class="nav-btn" data-section="daily">
+                    <span class="icon">✓</span> Daily Tasks
+                </button>
+                <button class="nav-btn" data-section="goals">
+                    <span class="icon">🎯</span> Goals
+                </button>
+                <button class="nav-btn" data-section="courses">
+                    <span class="icon">📚</span> Courses
+                </button>
+                <button class="nav-btn" data-section="analytics">
+                    <span class="icon">📈</span> Analytics
+                </button>
+                <button class="nav-btn" data-section="planning">
+                    <span class="icon">🗓️</span> Planning
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button class="theme-toggle" id="themeToggle" title="Toggle dark mode">
+                    <span class="theme-icon">🌙</span>
+                </button>
+                <button class="reset-btn" title="Reset all data">🔄</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="section active">
+                <div class="section-header">
+                    <h2>Dashboard</h2>
+                    <p class="date-display" id="dateDisplay"></p>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="quick-stats">
+                    <div class="stat-card">
+                        <div class="stat-label">Productive Streak</div>
+                        <div class="stat-value" id="streakCount">0</div>
+                        <div class="stat-sublabel">days</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Today's Hours</div>
+                        <div class="stat-value" id="todayHours">0h</div>
+                        <div class="stat-sublabel">tracked</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Productivity Score</div>
+                        <div class="stat-value" id="scoreValue">0</div>
+                        <div class="stat-sublabel">/ 100</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Level</div>
+                        <div class="stat-value" id="levelValue">1</div>
+                        <div class="stat-sublabel">
+                            <span id="totalPoints">0</span> pts
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Comparison Section -->
+                <div class="comparison-section">
+                    <h3>Productivity Comparison</h3>
+                    <div class="comparison-cards">
+                        <div class="comparison-card">
+                            <div class="comparison-label">Yesterday</div>
+                            <div class="comparison-value" id="yesterdayHours">0h</div>
+                            <div class="comparison-tasks" id="yesterdayTasks">0 tasks</div>
+                        </div>
+                        <div class="comparison-separator">vs</div>
+                        <div class="comparison-card highlight">
+                            <div class="comparison-label">Today</div>
+                            <div class="comparison-value" id="todayComparison">0h</div>
+                            <div class="comparison-tasks" id="todayTasksCount">0 tasks</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Motivational Quote -->
+                <div class="quote-section">
+                    <div class="quote-content">
+                        <p id="quoteText">"The only way to do great work is to love what you do." - Steve Jobs</p>
+                        <p id="quoteAuthor"></p>
+                    </div>
+                    <button class="quote-refresh" id="quoteRefresh">New Quote</button>
+                </div>
+
+                <!-- Weekly Progress -->
+                <div class="weekly-progress">
+                    <h3>This Week's Progress</h3>
+                    <div class="weekdays">
+                        <div class="weekday">
+                            <div class="day-label">Mon</div>
+                            <div class="day-bar"><div class="day-fill" style="height: 0%"></div></div>
+                            <div class="day-hours">0h</div>
+                        </div>
+                        <div class="weekday">
+                            <div class="day-label">Tue</div>
+                            <div class="day-bar"><div class="day-fill" style="height: 0%"></div></div>
+                            <div class="day-hours">0h</div>
+                        </div>
+                        <div class="weekday">
+                            <div class="day-label">Wed</div>
+                            <div class="day-bar"><div class="day-fill" style="height: 0%"></div></div>
+                            <div class="day-hours">0h</div>
+                        </div>
+                        <div class="weekday">
+                            <div class="day-label">Thu</div>
+                            <div class="day-bar"><div class="day-fill" style="height: 0%"></div></div>
+                            <div class="day-hours">0h</div>
+                        </div>
+                        <div class="weekday">
+                            <div class="day-label">Fri</div>
+                            <div class="day-bar"><div class="day-fill" style="height: 0%"></div></div>
+                            <div class="day-hours">0h</div>
+                        </div>
+                        <div class="weekday">
+                            <div class="day-label">Sat</div>
+                            <div class="day-bar"><div class="day-fill" style="height: 0%"></div></div>
+                            <div class="day-hours">0h</div>
+                        </div>
+                        <div class="weekday">
+                            <div class="day-label">Sun</div>
+                            <div class="day-bar"><div class="day-fill" style="height: 0%"></div></div>
+                            <div class="day-hours">0h</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Badges Section -->
+                <div class="badges-section">
+                    <h3>Achievements</h3>
+                    <div class="badges-grid" id="badgesGrid">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Daily Tasks Section -->
+            <section id="daily" class="section">
+                <div class="section-header">
+                    <h2>Daily Tasks</h2>
+                    <p class="date-display" id="dateDisplay2"></p>
+                </div>
+
+                <!-- Add Task Form -->
+                <div class="add-task-form">
+                    <input type="text" id="taskName" placeholder="Task name..." class="form-input">
+                    <input type="number" id="taskTime" placeholder="Hours" min="0.25" step="0.25" class="form-input small">
+                    <select id="taskPriority" class="form-input small">
+                        <option value="low">Low Priority</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="high">High Priority</option>
+                    </select>
+                    <button class="btn-primary" id="addTaskBtn">+ Add Task</button>
+                </div>
+
+                <!-- Task List -->
+                <div class="task-list" id="taskList">
+                    <!-- Populated by JS -->
+                </div>
+
+                <!-- Daily Notes Section -->
+                <div class="daily-notes">
+                    <h3>Daily Reflection</h3>
+                    
+                    <div class="mood-selector">
+                        <label>Today's Mood:</label>
+                        <div class="mood-options">
+                            <button class="mood-btn" data-mood="😭" title="Terrible">😭</button>
+                            <button class="mood-btn" data-mood="😞" title="Bad">😞</button>
+                            <button class="mood-btn" data-mood="😐" title="Okay">😐</button>
+                            <button class="mood-btn" data-mood="😊" title="Good">😊</button>
+                            <button class="mood-btn" data-mood="🤩" title="Excellent">🤩</button>
+                        </div>
+                    </div>
+
+                    <textarea id="learningNotes" placeholder="What did I learn today?" class="form-textarea"></textarea>
+                    <textarea id="missedNotes" placeholder="What could I have done better?" class="form-textarea"></textarea>
+                    
+                    <button class="btn-secondary" id="saveNotesBtn">Save Reflection</button>
+                </div>
+            </section>
+
+            <!-- Goals Section -->
+            <section id="goals" class="section">
+                <div class="section-header">
+                    <h2>Goals</h2>
+                    <p>Track your long-term objectives</p>
+                </div>
+
+                <!-- Add Goal Form -->
+                <div class="add-goal-form">
+                    <input type="text" id="goalName" placeholder="Goal name..." class="form-input">
+                    <select id="goalCategory" class="form-input small">
+                        <option value="health">Health</option>
+                        <option value="learning">Learning</option>
+                        <option value="work">Work</option>
+                        <option value="personal">Personal</option>
+                        <option value="fitness">Fitness</option>
+                    </select>
+                    <select id="goalPriority" class="form-input small">
+                        <option value="low">Low</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                    <input type="number" id="goalHours" placeholder="Est. hours" min="1" class="form-input small">
+                    <input type="date" id="goalDeadline" class="form-input small">
+                    <button class="btn-primary" id="addGoalBtn">+ Add Goal</button>
+                </div>
+
+                <!-- Goals List -->
+                <div class="goals-list" id="goalsList">
+                    <!-- Populated by JS -->
+                </div>
+            </section>
+
+            <!-- Courses Section -->
+            <section id="courses" class="section">
+                <div class="section-header">
+                    <h2>Course Progress</h2>
+                    <p>Track your learning journey</p>
+                </div>
+
+                <!-- Add Course Form -->
+                <div class="add-course-form">
+                    <input type="text" id="courseName" placeholder="Course name..." class="form-input">
+                    <input type="number" id="courseTotalLessons" placeholder="Total lessons" min="1" class="form-input small">
+                    <button class="btn-primary" id="addCourseBtn">+ Add Course</button>
+                </div>
+
+                <!-- Courses List -->
+                <div class="courses-list" id="coursesList">
+                    <!-- Populated by JS -->
+                </div>
+            </section>
+
+            <!-- Analytics Section -->
+            <section id="analytics" class="section">
+                <div class="section-header">
+                    <h2>Analytics</h2>
+                    <p>Insights into your productivity</p>
+                </div>
+
+                <!-- Time Distribution -->
+                <div class="analytics-card">
+                    <h3>Time Distribution This Week</h3>
+                    <div class="chart-container">
+                        <div class="pie-chart" id="pieChart">
+                            <!-- Populated by JS -->
+                        </div>
+                        <div class="chart-legend" id="chartLegend">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Monthly Progress -->
+                <div class="analytics-card">
+                    <h3>Monthly Progress</h3>
+                    <div class="progress-stats">
+                        <div class="stat-row">
+                            <span>Total Hours This Month</span>
+                            <span class="stat-number" id="monthlyHours">0h</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>Average per Day</span>
+                            <span class="stat-number" id="avgPerDay">0h</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>Most Productive Day</span>
+                            <span class="stat-number" id="mostProductive">-</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>Most Common Priority</span>
+                            <span class="stat-number" id="commonPriority">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Priority Distribution -->
+                <div class="analytics-card">
+                    <h3>Task Priority Distribution</h3>
+                    <div class="priority-bars">
+                        <div class="priority-bar-item">
+                            <div class="priority-label">High Priority</div>
+                            <div class="priority-bar-bg">
+                                <div class="priority-bar-fill high" style="width: 0%"></div>
+                            </div>
+                            <div class="priority-count" id="highCount">0</div>
+                        </div>
+                        <div class="priority-bar-item">
+                            <div class="priority-label">Medium Priority</div>
+                            <div class="priority-bar-bg">
+                                <div class="priority-bar-fill medium" style="width: 0%"></div>
+                            </div>
+                            <div class="priority-count" id="mediumCount">0</div>
+                        </div>
+                        <div class="priority-bar-item">
+                            <div class="priority-label">Low Priority</div>
+                            <div class="priority-bar-bg">
+                                <div class="priority-bar-fill low" style="width: 0%"></div>
+                            </div>
+                            <div class="priority-count" id="lowCount">0</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Planning Section -->
+            <section id="planning" class="section">
+                <div class="section-header">
+                    <h2>Weekly Planning</h2>
+                    <p>Plan ahead for success</p>
+                </div>
+
+                <!-- Tomorrow's Goals -->
+                <div class="planning-card">
+                    <h3>Tomorrow's Goals</h3>
+                    <div class="tomorrow-list" id="tomorrowList">
+                        <p class="empty-state">No goals set for tomorrow yet</p>
+                    </div>
+                    <textarea id="tomorrowInput" placeholder="What do you want to achieve tomorrow?" class="form-textarea"></textarea>
+                    <button class="btn-secondary" id="saveTomorrowBtn">Save Tomorrow's Goals</button>
+                </div>
+
+                <!-- Weekly Overview -->
+                <div class="planning-card">
+                    <h3>Week Overview</h3>
+                    <div class="week-overview" id="weekOverview">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
