@@ -29,6 +29,7 @@ class ProductivityOS {
         if (!this.data.goals) this.data.goals = [];
         if (!this.data.courses) this.data.courses = [];
         if (!this.data.notes) this.data.notes = {};
+        if (!this.data.futureGoals) this.data.futureGoals = {};
         if (!this.data.tomorrow) this.data.tomorrow = '';
         if (!this.data.points) this.data.points = 0;
         if (!this.data.badges) this.data.badges = {};
@@ -256,21 +257,28 @@ class ProductivityOS {
     }
 
     saveNotes() {
-        const learning = document.getElementById('learningNotes').value;
-        const missed = document.getElementById('missedNotes').value;
+        const learning = document.getElementById('learningNotes').value.trim();
+        const missed = document.getElementById('missedNotes').value.trim();
         const mood = document.querySelector('.mood-btn.active');
+
+        if (!learning && !missed) {
+            alert('Please write something in your reflection');
+            return;
+        }
 
         const notes = {
             learning,
             missed,
             mood: mood ? mood.dataset.mood : '😐',
-            savedAt: new Date().getTime()
+            savedAt: new Date().getTime(),
+            date: this.currentDate
         };
 
         this.data.notes[this.currentDate] = notes;
         this.saveData();
-        alert('Reflection saved!');
+        alert('✨ Reflection saved! Great job reflecting on your day.');
         this.awardPoints(5);
+        this.renderReflections();
     }
 
     loadNotes() {
@@ -280,6 +288,85 @@ class ProductivityOS {
             document.getElementById('missedNotes').value = notes.missed || '';
             const moodBtn = document.querySelector(`.mood-btn[data-mood="${notes.mood}"]`);
             if (moodBtn) moodBtn.classList.add('active');
+        }
+        this.renderReflections();
+    }
+
+    renderReflections() {
+        const container = document.getElementById('reflectionsHistory');
+        const previousContainer = document.getElementById('previousReflectionsContainer');
+        const todayNotes = this.data.notes[this.currentDate];
+
+        // Render today's reflection
+        if (todayNotes && (todayNotes.learning || todayNotes.missed)) {
+            const today = new Date(this.currentDate);
+            const dateStr = today.toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                month: 'long', 
+                day: 'numeric', 
+                year: 'numeric' 
+            });
+
+            container.innerHTML = `
+                <div class="reflection-card">
+                    <div class="reflection-date">
+                        <div class="reflection-date-text">📅 ${dateStr}</div>
+                        <div class="reflection-mood">${todayNotes.mood}</div>
+                    </div>
+                    <div class="reflection-content">
+                        <div class="reflection-item">
+                            <div class="reflection-item-label">✨ What I Learned</div>
+                            <div class="reflection-item-text">${todayNotes.learning || '(Not written)'}</div>
+                        </div>
+                        <div class="reflection-item">
+                            <div class="reflection-item-label">🎯 What I Could Improve</div>
+                            <div class="reflection-item-text">${todayNotes.missed || '(Not written)'}</div>
+                        </div>
+                    </div>
+                    <div class="reflection-status">
+                        <small>💾 Saved at ${new Date(todayNotes.savedAt).toLocaleTimeString()}</small>
+                    </div>
+                </div>
+            `;
+        } else {
+            container.innerHTML = '<p class="no-reflection-message">No reflection saved for today yet. Share your thoughts!</p>';
+        }
+
+        // Render previous reflections
+        const sortedDates = Object.keys(this.data.notes).sort().reverse();
+        const previousNotes = sortedDates.filter(date => date !== this.currentDate).slice(0, 10);
+
+        if (previousNotes.length > 0) {
+            previousContainer.innerHTML = previousNotes.map(date => {
+                const note = this.data.notes[date];
+                const dateObj = new Date(date);
+                const dateStr = dateObj.toLocaleDateString('en-US', { 
+                    weekday: 'short', 
+                    month: 'short', 
+                    day: 'numeric'
+                });
+
+                return `
+                    <div class="reflection-card">
+                        <div class="reflection-date">
+                            <div class="reflection-date-text">${dateStr}</div>
+                            <div class="reflection-mood">${note.mood}</div>
+                        </div>
+                        <div class="reflection-content">
+                            <div class="reflection-item">
+                                <div class="reflection-item-label">✨ Learned</div>
+                                <div class="reflection-item-text" style="max-height: 80px;">${note.learning || '(empty)'}</div>
+                            </div>
+                            <div class="reflection-item">
+                                <div class="reflection-item-label">🎯 To Improve</div>
+                                <div class="reflection-item-text" style="max-height: 80px;">${note.missed || '(empty)'}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        } else {
+            previousContainer.innerHTML = '<p class="no-reflection-message">No past reflections yet. Start building your reflection history!</p>';
         }
     }
 
@@ -515,19 +602,53 @@ class ProductivityOS {
 
     setupPlanningHandlers() {
         document.getElementById('saveTomorrowBtn').addEventListener('click', () => {
-            this.data.tomorrow = document.getElementById('tomorrowInput').value;
-            this.saveData();
-            alert('Tomorrow\'s goals saved!');
-            this.awardPoints(3);
+            this.saveTomorrowGoals();
         });
 
         this.updatePlanning();
     }
 
+    saveTomorrowGoals() {
+        const input = document.getElementById('tomorrowInput').value.trim();
+        
+        if (!input) {
+            alert('Please write your tomorrow goals');
+            return;
+        }
+
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        const tomorrowStr = tomorrow.toISOString().split('T')[0];
+
+        if (!this.data.futureGoals) {
+            this.data.futureGoals = {};
+        }
+
+        this.data.futureGoals[tomorrowStr] = {
+            goals: input,
+            savedAt: new Date().getTime(),
+            date: tomorrowStr
+        };
+
+        this.saveData();
+        alert('✨ Tomorrow\'s goals saved! You\'re preparing for success.');
+        this.awardPoints(3);
+        document.getElementById('tomorrowInput').value = '';
+        this.updatePlanning();
+    }
+
     updatePlanning() {
         const input = document.getElementById('tomorrowInput');
-        input.value = this.data.tomorrow || '';
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        const tomorrowStr = tomorrow.toISOString().split('T')[0];
+        
+        // Load saved tomorrow's goals if exists
+        if (this.data.futureGoals && this.data.futureGoals[tomorrowStr]) {
+            input.value = this.data.futureGoals[tomorrowStr].goals;
+        }
 
+        // Update week overview
         const today = new Date();
         const startOfWeek = new Date(today.setDate(today.getDate() - today.getDay() + 1));
 
@@ -550,6 +671,85 @@ class ProductivityOS {
         }
 
         weekOverview.innerHTML = dayElements.join('');
+
+        // Render saved tomorrow's goals
+        this.renderSavedTomorrowGoals();
+    }
+
+    renderSavedTomorrowGoals() {
+        const savedContainer = document.getElementById('savedTomorrowGoals');
+        const pastContainer = document.getElementById('pastPlannedGoals');
+
+        if (!this.data.futureGoals) {
+            this.data.futureGoals = {};
+        }
+
+        const sortedDates = Object.keys(this.data.futureGoals).sort();
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        const tomorrowStr = tomorrow.toISOString().split('T')[0];
+
+        // Show tomorrow and upcoming goals
+        const upcomingDates = sortedDates.filter(date => date >= tomorrowStr);
+
+        if (upcomingDates.length > 0) {
+            savedContainer.innerHTML = upcomingDates.slice(0, 5).map(date => {
+                const goal = this.data.futureGoals[date];
+                const dateObj = new Date(date);
+                const isToday = date === tomorrowStr;
+                
+                const dateStr = dateObj.toLocaleDateString('en-US', { 
+                    weekday: 'long', 
+                    month: 'long', 
+                    day: 'numeric',
+                    year: 'numeric'
+                });
+
+                const label = isToday ? '🚀 Tomorrow' : '📅 ' + dateStr;
+
+                return `
+                    <div class="goal-day-card">
+                        <div class="goal-date">
+                            <div class="goal-date-text">${label}</div>
+                            <div class="goal-date-label">🎯</div>
+                        </div>
+                        <div class="goal-text">${goal.goals}</div>
+                        <div class="reflection-status">
+                            <small>💾 Planned at ${new Date(goal.savedAt).toLocaleTimeString()}</small>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        } else {
+            savedContainer.innerHTML = '<p class="no-goals-message">No upcoming goals planned yet. Use the form above to plan!</p>';
+        }
+
+        // Show past planned goals
+        const pastDates = sortedDates.filter(date => date < tomorrowStr).sort().reverse().slice(0, 10);
+
+        if (pastDates.length > 0) {
+            pastContainer.innerHTML = pastDates.map(date => {
+                const goal = this.data.futureGoals[date];
+                const dateObj = new Date(date);
+                
+                const dateStr = dateObj.toLocaleDateString('en-US', { 
+                    weekday: 'short', 
+                    month: 'short', 
+                    day: 'numeric'
+                });
+
+                return `
+                    <div class="goal-day-card">
+                        <div class="goal-date">
+                            <div class="goal-date-text">${dateStr}</div>
+                        </div>
+                        <div class="goal-text">${goal.goals}</div>
+                    </div>
+                `;
+            }).join('');
+        } else {
+            pastContainer.innerHTML = '<p class="no-goals-message">No past planning history yet.</p>';
+        }
     }
 
     // ============================================
