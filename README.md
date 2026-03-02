@@ -90,43 +90,6 @@ SelfOS/
 - **Survives Reload** - Data persists after page refresh
 - **Manual Backup** - Export data anytime from browser DevTools
 
-## 🌐 Deployment
-
-Already deployed on **Netlify**:
-- **Live URL:** [myselfos.netlify.app](https://myselfos.netlify.app)
-- **Auto-deployed** from this GitHub repository
-
-To deploy your own version:
-1. Fork this repository
-2. Go to [netlify.com](https://netlify.com)
-3. Connect your GitHub account
-4. Select this repo
-5. Deploy! (automatic on every push)
-
-## 🎨 Customization
-
-### Change Theme Colors
-Edit `styles.css` line 8-15:
-```css
-:root {
-    --accent-primary: #2563eb;      /* Change primary color */
-    --accent-secondary: #10b981;    /* Change secondary color */
-    --priority-high: #dc2626;       /* Change high priority color */
-}
-```
-
-### Add More Quotes
-Edit `app.js` around line 830:
-```javascript
-const quotes = [
-    { text: "Your quote here", author: "Author Name" },
-    // Add more...
-];
-```
-
-### Add More Badges
-Edit `updateBadges()` method in `app.js` to add custom achievement badges.
-
 ## 📊 Gamification Details
 
 ### Points Breakdown
@@ -167,22 +130,6 @@ Edit `updateBadges()` method in `app.js` to add custom achievement badges.
 - ✅ Safari (latest)
 - ✅ Mobile browsers (all modern)
 
-## 📝 Key Changes (v2.0)
-
-- ✨ Added visible reflection display with 10-day history
-- ✨ Added visible planning display with browsable history
-- 🎨 Enhanced card-based UI for reflections and goals
-- 🔧 Improved data organization by dates
-- 📚 Complete documentation with guides
-
-## 📖 Documentation
-
-Comprehensive guides included:
-- **UPDATE_GUIDE.md** - Feature explanation
-- **BEFORE_AFTER.md** - Visual comparison
-- **QUICK_REFERENCE.md** - Usage guide
-- **CHANGELOG.md** - Technical details
-
 ## 🤝 Contributing
 
 Contributions welcome! To contribute:
@@ -199,11 +146,15 @@ Found a bug or have a suggestion? [Open an issue](https://github.com/seam-sikder
 
 ## 📄 License
 
-This project is open source and available under the MIT License - feel free to use, modify, and distribute.
+MIT License
+
+Copyright (c) 2026 Seam Sikder Nahid
+
+Permission is hereby granted, free of charge, to any person obtaining a copy...
 
 ## 🙏 Credits
 
-Built with ❤️ for personal growth, discipline, and productivity.
+Built with ❤️ by Seam Sikder Nahid for personal growth, discipline, and productivity.
 
 Inspired by the philosophy that **tracking creates awareness**, **consistency builds discipline**, and **gamification sustains motivation**.
 
