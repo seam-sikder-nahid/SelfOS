@@ -9,16 +9,18 @@
 <body>
     <!-- Particle background -->
     <div class="particle-bg"></div>
+
     <!-- Mobile Menu Button -->
-    <div class="mobile-menu-toggle" id="mobileMenuToggle">
+    <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
         <span></span>
         <span></span>
         <span></span>
-    </div>
+    </button>
+
     <!-- Main Container -->
     <div class="container">
         <!-- Sidebar Navigation -->
-        <aside class="sidebar">
+        <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <div class="app-logo">⚡</div>
                 <h1>SelfOS</h1>
@@ -260,6 +262,14 @@
                 <div class="goals-list" id="goalsList">
                     <!-- Populated by JS -->
                 </div>
+
+                <!-- Achieved Goals -->
+                <div class="completed-section" id="achievedGoalsSection" style="display: none;">
+                    <h3>🏆 Achieved Goals</h3>
+                    <div class="achieved-goals-list" id="achievedGoalsList">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
             </section>
 
             <!-- Courses Section -->
@@ -279,6 +289,14 @@
                 <!-- Courses List -->
                 <div class="courses-list" id="coursesList">
                     <!-- Populated by JS -->
+                </div>
+
+                <!-- Completed Courses -->
+                <div class="completed-section" id="completedCoursesSection" style="display: none;">
+                    <h3>🎓 Completed Courses</h3>
+                    <div class="completed-courses-list" id="completedCoursesList">
+                        <!-- Populated by JS -->
+                    </div>
                 </div>
             </section>
 
