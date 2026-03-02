@@ -103,9 +103,9 @@ body {
 
 .sidebar-header {
     text-align: center;
-    margin-bottom: 40px;
+    margin-bottom: 32px;
     border-bottom: 1px solid var(--border-color);
-    padding-bottom: 20px;
+    padding-bottom: 16px;
 }
 
 .app-logo {
@@ -218,14 +218,27 @@ body {
 }
 
 .section-header {
-    margin-bottom: 32px;
+    margin-bottom: 20px;
 }
 
 .section-header h2 {
-    font-size: 28px;
+    font-size: 22px;
     font-weight: 600;
-    margin-bottom: 8px;
-    letter-spacing: -0.8px;
+    margin-bottom: 4px;
+    letter-spacing: -0.5px;
+}
+
+.add-task-form,
+.add-goal-form,
+.add-course-form {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin-bottom: 20px;
+    padding: 14px;
+    background-color: var(--bg-secondary);
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
 }
 
 .date-display {
@@ -1268,7 +1281,7 @@ body {
 
     .main-content {
         margin-left: 0;
-        padding: 56px 16px 16px 16px;
+        padding: 56px 12px 16px 12px;
         width: 100%;
         overflow-y: auto;
     }
@@ -1302,16 +1315,16 @@ body {
     }
 
     .task-item {
-        grid-template-columns: auto 1fr auto;
+        grid-template-columns: auto 1fr auto auto auto;
         gap: 12px;
     }
 
     .task-rate {
-        display: none;
+        display: flex;
     }
 
     .task-time {
-        display: none;
+        display: block;
     }
 
     .comparison-cards {
@@ -1397,17 +1410,17 @@ body {
     }
 
     .quote-section {
-        padding: 16px;
-        margin-bottom: 20px;
+        padding: 14px;
+        margin-bottom: 16px;
     }
 
     .quote-content p {
-        font-size: 14px;
+        font-size: 13px;
     }
 
     .weekly-progress {
-        padding: 16px;
-        margin-bottom: 20px;
+        padding: 14px;
+        margin-bottom: 16px;
     }
 
     .weekdays {
@@ -1420,8 +1433,8 @@ body {
     }
 
     .badges-section {
-        padding: 16px;
-        margin-bottom: 20px;
+        padding: 14px;
+        margin-bottom: 16px;
     }
 
     .badges-grid {
@@ -1435,11 +1448,12 @@ body {
 
     .task-list {
         gap: 8px;
+        margin-bottom: 24px;
     }
 
     .task-item {
         padding: 12px;
-        grid-template-columns: auto 1fr;
+        grid-template-columns: auto 1fr auto auto auto;
         gap: 8px;
     }
 
@@ -1453,6 +1467,17 @@ body {
         font-size: 13px;
     }
 
+    .task-rate {
+        display: flex;
+        gap: 2px;
+    }
+
+    .rate-btn {
+        width: 20px;
+        height: 20px;
+        font-size: 12px;
+    }
+
     .task-delete {
         width: 24px;
         height: 24px;
@@ -1464,7 +1489,8 @@ body {
     .add-course-form {
         grid-template-columns: 1fr;
         gap: 8px;
-        padding: 16px;
+        padding: 12px;
+        margin-bottom: 16px;
     }
 
     .form-input {
@@ -1482,12 +1508,14 @@ body {
     .courses-list,
     .completed-courses-list,
     .achieved-goals-list {
-        gap: 12px;
+        gap: 10px;
+        margin-bottom: 16px;
     }
 
     .goal-card,
     .course-card {
-        padding: 16px;
+        padding: 14px;
+        margin-bottom: 0;
     }
 
     .goal-title {
@@ -1505,12 +1533,13 @@ body {
     }
 
     .daily-notes {
-        padding: 16px;
+        padding: 14px;
         margin-top: 20px;
+        margin-bottom: 20px;
     }
 
     .daily-notes h3 {
-        margin-bottom: 16px;
+        margin-bottom: 14px;
         font-size: 14px;
     }
 
@@ -1525,14 +1554,14 @@ body {
     }
 
     .planning-card {
-        padding: 16px;
-        margin-bottom: 16px;
+        padding: 14px;
+        margin-bottom: 14px;
     }
 
     .completed-section {
-        padding: 16px;
-        margin-top: 24px;
-        margin-bottom: 16px;
+        padding: 14px;
+        margin-top: 16px;
+        margin-bottom: 14px;
     }
 
     .reflection-card,
@@ -1548,8 +1577,8 @@ body {
     }
 
     .analytics-card {
-        padding: 16px;
-        margin-bottom: 16px;
+        padding: 14px;
+        margin-bottom: 14px;
     }
 
     .pie-chart {
