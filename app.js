@@ -462,13 +462,13 @@ class ProductivityOS {
                             Deadline: ${new Date(goal.deadline).toLocaleDateString()} 
                             <span style="color: ${color}">(${daysLeft > 0 ? daysLeft + ' days left' : 'Overdue'})</span>
                         </div>
-                        <div style="display: flex; gap: 8px;">
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                             <input type="number" placeholder="Add hours" step="0.25" min="0" 
-                                class="form-input small" data-goal-id="${goal.id}" data-action="goal-hours">
+                                class="form-input small" data-goal-id="${goal.id}" data-action="goal-hours" style="flex: 1; min-width: 120px;">
                             <button class="btn-secondary" data-goal-id="${goal.id}" data-action="add-goal-hours"
-                                style="padding: 10px 16px;">+ Add</button>
+                                style="padding: 10px 16px; white-space: nowrap;">+ Add</button>
                             <button class="btn-secondary" data-goal-id="${goal.id}" data-action="delete-goal"
-                                style="padding: 10px 16px; background-color: rgba(239, 68, 68, 0.1); color: #ef4444;">Delete</button>
+                                style="padding: 10px 16px; background-color: rgba(239, 68, 68, 0.1); color: #ef4444; white-space: nowrap;">Delete</button>
                         </div>
                     </div>
                 `;
