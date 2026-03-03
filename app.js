@@ -21,6 +21,9 @@ class ProductivityOS {
         if (!this.data.completedGoals) this.data.completedGoals = [];
         if (!this.data.courses) this.data.courses = [];
         if (!this.data.completedCourses) this.data.completedCourses = [];
+        if (!this.data.books) this.data.books = [];
+        if (!this.data.completedBooks) this.data.completedBooks = [];
+        if (!this.data.nofap) this.data.nofap = {};
         if (!this.data.notes) this.data.notes = {};
         if (!this.data.futureGoals) this.data.futureGoals = {};
         if (!this.data.tomorrow) this.data.tomorrow = '';
@@ -42,6 +45,8 @@ class ProductivityOS {
         this.setupNoteHandlers();
         this.setupQuoteSection();
         this.setupPlanningHandlers();
+        this.setupLibraryHandlers();
+        this.setupNoFapHandlers();
         this.setupMiscHandlers();
         this.updateAllUI();
         this.checkStreakStatus();
@@ -73,7 +78,8 @@ class ProductivityOS {
         const sidebar = document.getElementById('sidebar');
         const navBtns = document.querySelectorAll('.nav-btn');
 
-        toggle.addEventListener('click', () => {
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
             toggle.classList.toggle('active');
             sidebar.classList.toggle('active');
         });
@@ -83,6 +89,13 @@ class ProductivityOS {
                 toggle.classList.remove('active');
                 sidebar.classList.remove('active');
             });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!sidebar.contains(e.target) && !toggle.contains(e.target)) {
+                toggle.classList.remove('active');
+                sidebar.classList.remove('active');
+            }
         });
 
         window.addEventListener('resize', () => {
@@ -669,6 +682,314 @@ class ProductivityOS {
                 </div>
             </div>
         `).join('');
+    }
+
+    setupLibraryHandlers() {
+        document.getElementById('addBookBtn').addEventListener('click', () => this.addBook());
+        this.renderBooks();
+    }
+
+    addBook() {
+        const name = document.getElementById('bookName').value.trim();
+        const pages = parseInt(document.getElementById('bookPages').value);
+
+        if (!name || !pages || pages <= 0) {
+            alert('Please fill all fields correctly');
+            return;
+        }
+
+        const book = {
+            id: Date.now(),
+            name,
+            totalPages: pages,
+            pagesRead: 0,
+            createdAt: new Date().getTime()
+        };
+
+        this.data.books.push(book);
+        this.saveData();
+
+        document.getElementById('bookName').value = '';
+        document.getElementById('bookPages').value = '';
+
+        this.renderBooks();
+        this.updateAllUI();
+    }
+
+    renderBooks() {
+        const list = document.getElementById('booksList');
+        const activeBooks = this.data.books.filter(b => b.pagesRead < b.totalPages);
+
+        if (activeBooks.length === 0) {
+            list.innerHTML = '<p class="empty-state">No active books yet. Add one to start reading!</p>';
+        } else {
+            list.innerHTML = activeBooks.map(book => {
+                const progress = (book.pagesRead / book.totalPages) * 100;
+
+                return `
+                    <div class="book-card">
+                        <div class="book-header">
+                            <h4 class="book-title">${this.escapeHtml(book.name)}</h4>
+                            <div class="book-stats">${book.pagesRead} / ${book.totalPages} pages</div>
+                        </div>
+                        <div class="book-progress-section">
+                            <div class="progress-info">
+                                <span>Progress: ${Math.round(progress)}%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${progress}%"></div>
+                            </div>
+                        </div>
+                        <div class="page-input-group">
+                            <input type="number" placeholder="Pages read today" min="0" step="1" 
+                                data-book-id="${book.id}" data-action="book-pages" class="form-input">
+                            <button class="btn-secondary" data-book-id="${book.id}" data-action="add-book-pages">Add</button>
+                            <button class="btn-secondary" data-book-id="${book.id}" data-action="delete-book"
+                                style="background-color: rgba(239, 68, 68, 0.1); color: #ef4444;">Delete</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        list.querySelectorAll('[data-action="add-book-pages"]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const bookId = parseInt(e.target.dataset.bookId);
+                const input = list.querySelector(`[data-book-id="${bookId}"][data-action="book-pages"]`);
+                const pages = parseInt(input.value);
+                if (pages > 0) this.addBookPages(bookId, pages);
+                input.value = '';
+            });
+        });
+
+        list.querySelectorAll('[data-action="delete-book"]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const bookId = parseInt(e.target.dataset.bookId);
+                this.deleteBook(bookId);
+            });
+        });
+
+        this.renderCompletedBooks();
+    }
+
+    addBookPages(bookId, pages) {
+        const book = this.data.books.find(b => b.id === bookId);
+        if (!book) return;
+
+        book.pagesRead = Math.min(book.pagesRead + pages, book.totalPages);
+
+        if (book.pagesRead >= book.totalPages) {
+            this.data.completedBooks.push(book);
+            this.data.books = this.data.books.filter(b => b.id !== bookId);
+        }
+
+        this.saveData();
+        this.renderBooks();
+        this.updateAllUI();
+    }
+
+    deleteBook(bookId) {
+        this.data.books = this.data.books.filter(b => b.id !== bookId);
+        this.saveData();
+        this.renderBooks();
+    }
+
+    renderCompletedBooks() {
+        const section = document.getElementById('completedBooksSection');
+        const list = document.getElementById('completedBooksList');
+
+        if (this.data.completedBooks.length === 0) {
+            section.style.display = 'none';
+            return;
+        }
+
+        section.style.display = 'block';
+        list.innerHTML = this.data.completedBooks.map(book => `
+            <div class="completed-book-card">
+                <div class="book-header">
+                    <h4 class="book-title">✓ ${this.escapeHtml(book.name)}</h4>
+                    <div class="book-stats">${book.pagesRead} pages</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 100%"></div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    setupNoFapHandlers() {
+        this.currentNoFapMonth = new Date();
+        this.renderNoFapCalendar();
+
+        document.getElementById('prevMonthBtn').addEventListener('click', () => {
+            this.currentNoFapMonth.setMonth(this.currentNoFapMonth.getMonth() - 1);
+            this.renderNoFapCalendar();
+        });
+
+        document.getElementById('nextMonthBtn').addEventListener('click', () => {
+            this.currentNoFapMonth.setMonth(this.currentNoFapMonth.getMonth() + 1);
+            this.renderNoFapCalendar();
+        });
+    }
+
+    renderNoFapCalendar() {
+        const monthLabel = this.currentNoFapMonth.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+        document.getElementById('currentMonthLabel').textContent = monthLabel;
+
+        const year = this.currentNoFapMonth.getFullYear();
+        const month = this.currentNoFapMonth.getMonth();
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+        const startDate = new Date(firstDay);
+        startDate.setDate(startDate.getDate() - firstDay.getDay());
+
+        const monthKey = `${year}-${String(month + 1).padStart(2, '0')}`;
+        if (!this.data.nofap[monthKey]) {
+            this.data.nofap[monthKey] = {};
+        }
+
+        let html = '';
+        const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        html += '<div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 12px; text-align: center; font-weight: 600; font-size: 12px;">';
+        weekDays.forEach(day => html += `<div>${day}</div>`);
+        html += '</div>';
+
+        html += '<div class="calendar-grid">';
+        const current = new Date(startDate);
+        while (current <= lastDay || current.getDay() !== 0) {
+            const dayOfMonth = current.getDate();
+            const isCurrentMonth = current.getMonth() === month;
+            const key = `${year}-${String(month + 1).padStart(2, '0')}-${String(dayOfMonth).padStart(2, '0')}`;
+            const status = this.data.nofap[monthKey][key];
+
+            if (isCurrentMonth) {
+                let className = 'calendar-day';
+                let content = dayOfMonth;
+
+                if (status === 'win') {
+                    className += ' win';
+                    content = '✓';
+                } else if (status === 'loss') {
+                    className += ' loss';
+                    content = '✗';
+                }
+
+                html += `<div class="${className}" data-date="${key}" data-month-key="${monthKey}">${content}</div>`;
+            } else {
+                html += `<div class="calendar-day empty">${dayOfMonth}</div>`;
+            }
+
+            current.setDate(current.getDate() + 1);
+        }
+        html += '</div>';
+
+        document.getElementById('nofapCalendar').innerHTML = html;
+
+        document.querySelectorAll('.calendar-day:not(.empty)').forEach(el => {
+            el.addEventListener('click', (e) => {
+                const dateStr = e.target.dataset.date;
+                const monthKey = e.target.dataset.monthKey;
+                this.showNoFapModal(dateStr, monthKey);
+            });
+        });
+
+        this.updateNoFapStats();
+        this.renderMonthHistory();
+    }
+
+    showNoFapModal(dateStr, monthKey) {
+        const overlay = document.createElement('div');
+        overlay.className = 'modal-overlay active';
+        overlay.addEventListener('click', () => {
+            overlay.remove();
+            document.querySelector('.day-selection-modal')?.remove();
+        });
+
+        const modal = document.createElement('div');
+        modal.className = 'day-selection-modal active';
+        modal.innerHTML = `
+            <h4>Mark ${dateStr}</h4>
+            <div class="modal-buttons">
+                <button class="btn-win">✓ Win</button>
+                <button class="btn-loss">✗ Loss</button>
+            </div>
+        `;
+
+        modal.querySelector('.btn-win').addEventListener('click', () => {
+            this.data.nofap[monthKey][dateStr] = 'win';
+            this.saveData();
+            this.renderNoFapCalendar();
+            overlay.remove();
+            modal.remove();
+        });
+
+        modal.querySelector('.btn-loss').addEventListener('click', () => {
+            this.data.nofap[monthKey][dateStr] = 'loss';
+            this.saveData();
+            this.renderNoFapCalendar();
+            overlay.remove();
+            modal.remove();
+        });
+
+        document.body.appendChild(overlay);
+        document.body.appendChild(modal);
+    }
+
+    updateNoFapStats() {
+        let totalWins = 0;
+        let totalLosses = 0;
+
+        Object.keys(this.data.nofap).forEach(monthKey => {
+            Object.values(this.data.nofap[monthKey]).forEach(status => {
+                if (status === 'win') totalWins++;
+                if (status === 'loss') totalLosses++;
+            });
+        });
+
+        document.getElementById('nofapWins').textContent = totalWins;
+        document.getElementById('nofapLosses').textContent = totalLosses;
+    }
+
+    renderMonthHistory() {
+        const container = document.getElementById('monthHistory');
+        const months = Object.keys(this.data.nofap).sort().reverse().slice(0, 12);
+
+        if (months.length === 0) {
+            container.innerHTML = '<p class="empty-state" style="width: 100%; text-align: center;">No history yet. Start tracking!</p>';
+            return;
+        }
+
+        container.innerHTML = months.map(monthKey => {
+            const [year, month] = monthKey.split('-');
+            const monthName = new Date(year, parseInt(month) - 1).toLocaleString('en-US', { month: 'long', year: 'numeric' });
+            const monthData = this.data.nofap[monthKey];
+
+            const days = [];
+            const daysInMonth = new Date(year, month, 0).getDate();
+            for (let d = 1; d <= daysInMonth; d++) {
+                const dateKey = `${year}-${month}-${String(d).padStart(2, '0')}`;
+                const status = monthData[dateKey];
+                let dayClass = 'mini-day';
+                let content = d;
+
+                if (status === 'win') {
+                    dayClass += ' win';
+                    content = '✓';
+                } else if (status === 'loss') {
+                    dayClass += ' loss';
+                    content = '✗';
+                }
+
+                days.push(`<div class="${dayClass}">${content}</div>`);
+            }
+
+            return `
+                <div class="month-card">
+                    <h4>${monthName}</h4>
+                    <div class="mini-calendar">${days.join('')}</div>
+                </div>
+            `;
+        }).join('');
     }
 
     setupPlanningHandlers() {
