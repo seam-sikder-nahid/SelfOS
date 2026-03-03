@@ -1553,6 +1553,20 @@ body {
         height: 6px;
     }
 
+    .goal-card > div:last-child {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .goal-card button {
+        width: 100%;
+    }
+
+    .goal-card input[type="number"] {
+        width: 100%;
+    }
+
     .form-textarea {
         min-height: 80px;
         padding: 8px 12px;
