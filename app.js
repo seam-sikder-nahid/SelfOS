@@ -964,8 +964,11 @@ class ProductivityOS {
             const monthName = new Date(year, parseInt(month) - 1).toLocaleString('en-US', { month: 'long', year: 'numeric' });
             const monthData = this.data.nofap[monthKey];
 
+            let wins = 0;
+            let losses = 0;
             const days = [];
             const daysInMonth = new Date(year, month, 0).getDate();
+            
             for (let d = 1; d <= daysInMonth; d++) {
                 const dateKey = `${year}-${month}-${String(d).padStart(2, '0')}`;
                 const status = monthData[dateKey];
@@ -975,9 +978,11 @@ class ProductivityOS {
                 if (status === 'win') {
                     dayClass += ' win';
                     content = '✓';
+                    wins++;
                 } else if (status === 'loss') {
                     dayClass += ' loss';
                     content = '✗';
+                    losses++;
                 }
 
                 days.push(`<div class="${dayClass}">${content}</div>`);
@@ -985,7 +990,13 @@ class ProductivityOS {
 
             return `
                 <div class="month-card">
-                    <h4>${monthName}</h4>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <h4>${monthName}</h4>
+                        <div style="font-size: 13px; font-weight: 600;">
+                            <span style="color: #10b981;">✓ ${wins}</span> | 
+                            <span style="color: #ef4444;">✗ ${losses}</span>
+                        </div>
+                    </div>
                     <div class="mini-calendar">${days.join('')}</div>
                 </div>
             `;
