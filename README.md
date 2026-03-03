@@ -61,7 +61,6 @@ That's it! Data saves automatically to your browser.
 ```
 SelfOS/
 ├── assets
-|  └── images
 ├── index.html          # HTML structure (6 main sections)
 ├── styles.css          # Styling with dark/light themes
 ├── app.js              # Core JavaScript logic
