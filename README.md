@@ -6,13 +6,15 @@ A minimalist, full-featured productivity tracking web application built with van
 
 ## ✨ Features
 
-### Core Functionality
-- **Daily Task Tracking** - Add tasks with time estimates, priorities, and completion tracking
-- **Task Quality Rating** - Rate task quality with emoji feedback (👎 👌 👍)
-- **Daily Reflection** - Journal your learnings and areas for improvement with mood tracking
-- **Goal Management** - Create goals with categories, deadlines, and visual progress bars
-- **Course Progress** - Track learning courses lesson-by-lesson
-- **Analytics Dashboard** - Pie charts, weekly progress, monthly statistics, and priority analysis
+# Core Functionality
+- **Daily Task Tracking** - Add tasks with time estimates, priorities, and completion tracking  
+- **Task Quality Rating** - Rate task quality with emoji feedback (👎 👌 👍)  
+- **Daily Reflection** - Journal your learnings and areas for improvement with mood tracking  
+- **Goal Management** - Create goals with categories, deadlines, and visual progress bars  
+- **Course Progress** - Track learning courses lesson-by-lesson  
+- **Analytics Dashboard** - Pie charts, weekly progress, monthly statistics, and priority analysis  
+- **Library Tracking** - Monitor reading progress across multiple books with visual progress bars  
+- **NoFap Challenge** - Track daily discipline with interactive calendar system and monthly summaries  
 
 ### Gamification
 - **Points System** - Earn points for tasks, lessons, reflections (+10, +15, +5 respectively)
@@ -74,13 +76,16 @@ SelfOS/
 3. **Evening** - Write daily reflection and plan tomorrow's goals
 4. **Weekly** - Review analytics and past reflections
 
-### Main Sections
-- **Dashboard** - Quick stats, streak, score, quotes, weekly progress
-- **Daily Tasks** - Task management, reflection journaling, mood tracking
-- **Goals** - Create and track long-term goals with progress bars
-- **Courses** - Track learning courses by lessons
-- **Analytics** - Charts, statistics, and productivity insights
-- **Planning** - Plan tomorrow's goals and review weekly planning
+# Main Sections
+- **Dashboard** - Quick stats, streak, score, quotes, weekly progress  
+- **Daily Tasks** - Task management, reflection journaling, mood tracking  
+- **Goals** - Create and track long-term goals with progress bars  
+- **Courses** - Track learning courses by lessons  
+- **Library** - Track reading progress and manage completed books  
+- **NoFap** - Interactive calendar with Win/Loss tracking and monthly history  
+- **Analytics** - Charts, statistics, and productivity insights  
+- **Planning** - Plan tomorrow's goals and review weekly planning  
+- **About** - Learn about SelfOS features and creator information
 
 ## 💾 Data Storage
 
@@ -130,6 +135,15 @@ SelfOS/
 - ✅ Safari (latest)
 - ✅ Mobile browsers (all modern)
 
+## 📱 Mobile Optimization
+
+The app is fully responsive:
+- **Desktop**: Full sidebar + content layout
+- **Tablet**: Compressed sidebar + content
+- **Mobile**: Bottom navigation + stacked layout
+- Touch-friendly buttons and inputs
+- Readable text on all screen sizes
+
 ## 🤝 Contributing
 
 Contributions welcome! To contribute:
@@ -154,7 +168,7 @@ Permission is hereby granted, free of charge, to any person obtaining a copy.
 
 ## 🙏 Credits
 
-Built with ❤️ by **Seam Sikder Nahid** — a tool for personal growth, discipline, and productivity.
+Built with ❤️ by [**Seam Sikder Nahid**](https://www.linkedin.com/in/seam-sikder-nahid/) - a tool for personal growth, discipline, and productivity.
 
 Inspired by the philosophy that:
 - **Tracking creates awareness,**
@@ -169,6 +183,18 @@ Inspired by the philosophy that:
 - **100% Private** - All data local to your browser
 - **Fully Responsive** - Works on all devices
 - **Dark Mode** - Beautiful in both themes
+
+## 🚀 Future Enhancement Ideas
+
+- Export data as PDF or CSV
+- Calendar view of all activities
+- Recurring/recurring tasks
+- Team/shared productivity tracking
+- Integration with calendar apps
+- Mobile app version
+- Sync across devices (optional, private)
+- Custom themes
+- Advanced analytics and graphs
 
 ## 🎯 What Users Say
 
@@ -185,3 +211,5 @@ Inspired by the philosophy that:
 Visit: [myselfos.netlify.app](https://myselfos.netlify.app)
 
 GitHub: [github.com/seam-sikder-nahid/SelfOS](https://github.com/seam-sikder-nahid/SelfOS)
+
+Website: [Seam Sikder Nahid](https://seamsikdernahid.netlify.app)
