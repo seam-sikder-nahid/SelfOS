@@ -2027,7 +2027,7 @@ body {
     color: var(--accent-primary);
     text-decoration: none;
     transition: var(--transition);
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 600;
     border: 1px solid var(--border-color);
     padding: 0 8px;
