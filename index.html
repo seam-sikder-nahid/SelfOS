@@ -46,6 +46,15 @@
                 <button class="nav-btn" data-section="planning">
                     <span class="icon">🗓️</span> Planning
                 </button>
+                <button class="nav-btn" data-section="library">
+                    <span class="icon">📖</span> Library
+                </button>
+                <button class="nav-btn" data-section="nofap">
+                    <span class="icon">💪</span> NoFap
+                </button>
+                <button class="nav-btn" data-section="about">
+                    <span class="icon">ℹ️</span> About
+                </button>
             </nav>
 
             <div class="sidebar-footer">
@@ -407,6 +416,101 @@
                     <h3>Week Overview</h3>
                     <div class="week-overview" id="weekOverview">
                         <!-- Populated by JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Library Section -->
+            <section id="library" class="section">
+                <div class="section-header">
+                    <h2>Library</h2>
+                    <p>Track your reading progress</p>
+                </div>
+
+                <div class="add-book-form">
+                    <input type="text" id="bookName" placeholder="Book name..." class="form-input">
+                    <input type="number" id="bookPages" placeholder="Total pages" min="1" class="form-input small">
+                    <button class="btn-primary" id="addBookBtn">+ Add Book</button>
+                </div>
+
+                <div class="books-list" id="booksList"></div>
+
+                <div class="completed-section" id="completedBooksSection" style="display: none;">
+                    <h3>📚 Completed Books</h3>
+                    <div class="completed-books-list" id="completedBooksList"></div>
+                </div>
+            </section>
+
+            <!-- NoFap Section -->
+            <section id="nofap" class="section">
+                <div class="section-header">
+                    <h2>NoFap Challenge</h2>
+                    <p>Track your daily discipline</p>
+                </div>
+
+                <div class="nofap-controls">
+                    <button class="btn-secondary" id="prevMonthBtn">← Previous</button>
+                    <span id="currentMonthLabel" style="font-weight: 600; flex: 1; text-align: center;"></span>
+                    <button class="btn-secondary" id="nextMonthBtn">Next →</button>
+                </div>
+
+                <div class="nofap-calendar" id="nofapCalendar"></div>
+
+                <div class="nofap-stats">
+                    <div class="stat-card">
+                        <div class="stat-label">Total Wins</div>
+                        <div class="stat-value" id="nofapWins">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Total Losses</div>
+                        <div class="stat-value" id="nofapLosses">0</div>
+                    </div>
+                </div>
+
+                <div class="month-history" id="monthHistory"></div>
+            </section>
+
+            <!-- About Section -->
+            <section id="about" class="section">
+                <div class="section-header">
+                    <h2>About SelfOS</h2>
+                </div>
+
+                <div class="about-card">
+                    <h3>What is SelfOS?</h3>
+                    <p>SelfOS is a comprehensive personal productivity and discipline system designed to help you track, manage, and achieve your goals. Built entirely in your browser with zero backend servers, it keeps all your data private and secure.</p>
+                    
+                    <h4>Key Features</h4>
+                    <ul class="feature-list">
+                        <li><strong>Daily Task Management</strong> - Add tasks with priorities and track completion in real-time.</li>
+                        <li><strong>Goal Tracking</strong> - Set long-term goals with deadlines and monitor progress visually.</li>
+                        <li><strong>Course Progress</strong> - Track your learning journey lesson by lesson.</li>
+                        <li><strong>Daily Reflection</strong> - Journal your learnings and areas for improvement with mood tracking.</li>
+                        <li><strong>Analytics Dashboard</strong> - View comprehensive charts and statistics of your productivity.</li>
+                        <li><strong>Gamification</strong> - Earn points, unlock badges, and maintain streaks for motivation.</li>
+                        <li><strong>Library Tracker</strong> - Monitor your reading progress across multiple books.</li>
+                        <li><strong>NoFap Challenge</strong> - Track daily discipline with a visual calendar system.</li>
+                        <li><strong>Planning & Reflection</strong> - Plan tomorrow's goals and reflect on daily achievements.</li>
+                    </ul>
+                </div>
+
+                <div class="about-card creator-card">
+                    <h3>Creator</h3>
+                    <div class="creator-profile">
+                        <div class="creator-avatar">👨‍💻</div>
+                        <div class="creator-info">
+                            <h4>Seamul Sikder</h4>
+                            <p>Full-stack Developer & Productivity Enthusiast</p>
+                            <p class="creator-bio">Building tools that help people become disciplined, focused, and productive. SelfOS is a passion project created to help anyone track their progress and build consistent habits.</p>
+                            
+                            <div class="creator-links">
+                                <p><strong>Connect:</strong></p>
+                                <ul>
+                                    <li><a href="https://github.com/seam-sikder-nahid" target="_blank" rel="noopener">GitHub</a></li>
+                                    <li><a href="https://myselfos.netlify.app" target="_blank" rel="noopener">Live App</a></li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
